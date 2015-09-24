@@ -1,0 +1,20 @@
+{
+  "name": "F5R2",
+  "version": "0.0.0",
+  "description": "F5 version 2, a front-end development tool.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node .\\bin\\f5r2"
+  },
+  "repository": "",
+  "keywords": [
+    "front-end",
+    "auto refresh"
+  ],
+  "dependencies": {
+      "socket.io": "0.8",
+      "mime":"*"
+  },
+  "author": "UncleBill",
+  "license": "BSD"
+}

@@ -1,0 +1,136 @@
+html {
+    background-color: #ffde78;
+}
+.project-list {
+    background-color: #F6F6EF;
+}
+.project-list .project {
+    background-color: #ff6600;
+    height: 50px;
+    color: #eeeeee;
+    position: relative;
+    cursor: default;
+}
+.project-list .project.selected {
+    background-image: url(../images/triangle-right.png);
+    background-repeat: no-repeat;
+    background-position: right 0;
+    height: 70px;
+}
+.project-list .project.status-closed {
+    -webkit-filter: grayscale(0.8);
+    opacity: 0.6;
+    filter: alpha(opacity=60);
+}
+.project-list .project.selected .project-inner {
+    background-image: url(../images/triangle-left.png);
+    background-repeat: no-repeat;
+    background-position: left center;
+}
+.project .project-info .project-name {
+    font-size: 15px;
+    color: #eeeeee;
+    text-decoration: none;
+}
+.project .project-info .project-name:hover {
+    text-decoration: underline;
+}
+.project .project-info .project-port {
+    font-size: 12px;
+    margin-left: 5px;
+}
+.project .project-info .project-path {
+    font-size: 13px;
+    color: #690000;
+}
+.project .project-link,
+.project-list .project-new .btn-create,
+.project-list .project-new .btn-reload {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    display: inline-block;
+    height: 30px;
+    width: 30px;
+    text-align: center;
+    line-height: 30px;
+    color: #fff;
+    text-decoration: none;
+    background-color: #ff841e;
+    border-radius: 2px;
+    font-size: 30px;
+    vertical-align: middle;
+}
+.project-list .project:nth-child(odd) {
+    background-color: #e14800;
+}
+.project-list .project-inner {
+    display: inline-block;
+    width: 230px;
+    height: 40px;
+    padding: 5px 10px;
+}
+.project-list .project-new {
+    background-color: #cd3400;
+}
+.project-list .project-new .project-inner {
+    height: 30px;
+    padding: 10px;
+}
+.project-list .project-new .input-loca {
+    display: inline-block;
+    padding: 0;
+    border: 0;
+    width: 70%;
+    text-indent: 0.5em;
+    height: 30px;
+    line-height: 30px;
+    outline: none;
+    border-radius: 2px;
+    vertical-align: middle;
+    margin-left: 35px;
+    -moz-transition: all 0.3s linear;
+    -ms-transition: all 0.3s linear;
+    -o-transition: all 0.3s linear;
+    -webkit-transition: all 0.3s linear;
+    transition: all 0.3s linear;
+}
+.project-list .project-new .input-loca[readonly=readonly] {
+    background-color: #ddd;
+}
+.project-list .project-new .btn-reload {
+    left: 10px;
+    background-image: url(../images/icon-reload.png);
+    border-radius: 30px;
+}
+.project-list .project .project-close {
+    position: absolute;
+    background-color: #00f;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    left: 0;
+    top: 0;
+    color: #fff;
+}
+.project-list .project .project-operate {
+    height: 20px;
+}
+.project-list .project .project-operate table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    border: none;
+}
+.project-list .project .project-operate td {
+    border: none;
+}
+.project-list .project .project-operate .operate-item {
+    display: inline-block;
+    text-decoration: none;
+    background-color: #ff0;
+    width: 100%;
+    text-align: center;
+    color: #00f;
+    cursor: pointer;
+}

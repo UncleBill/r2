@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <link rel="stylesheet" type="text/css" href="styles/common.css" />
+        <link rel="stylesheet" type="text/css" href="styles/project.css" />
+        <script src="scripts/jquery-1.8.3.min.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/template" id="projectTpl">
+            <div class="project status-{{status}}" data-dir="{{projectPath}}">
+                <div class="project-inner">
+                    <div class="project-info">
+                        <a class="project-name" href="{{projectLink}}" target="main">
+                            {{projectName}}
+                            <span class="project-port">{{projectPort}}</span>
+                        </a>
+                        <div class="project-path" title="{{projectPath}}">{{projectPath}}</div>
+                    </div>
+                    <a class="project-link" href="{{projectLink}}/index.html" target="_blank">&#8599;</a>
+                </div>
+                <div class="project-operate">
+                    <table>
+                        <tr>
+                            <td><a class="operate-item operate-close"  href="javascript:void(0);">close</a></td>
+                            <td><a class="operate-item operate-delete" href="javascript:void(0);">delete</a></td>
+                            <td><a class="operate-item operate-restart" href="javascript:void(0);">restart</a></td>
+                            <td><a class="operate-item operate-view" href="{{projectLink}}" target="_blank">view</a></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </script>
+    </head>
+    <body>
+        <div class="project-list">
+            <div class="list" id="projectList"></div>
+            <div class="project project-new">
+                <div class="project-inner">
+                    <input type="text" class="input-loca" name="loca" id="newpath">
+                    <a class="btn-item btn-create" id="btnCreate" href="javascript:void(0);">+</a>
+                    <a class="btn-item btn-reload" id="btnReload" href="javascript:void(0);"></a>
+                </div>
+            </div>
+        </div>
+        <script src="scripts/projects.js" type="text/javascript" charset="utf-8"></script>
+    </body>
+</html>

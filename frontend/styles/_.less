@@ -1,0 +1,56 @@
+﻿.left() {
+    float: left;
+}
+.right() {
+    float: right;
+}
+.hide() {
+    display: none;
+}
+.middle(@h) {
+    line-height: @h;
+    height: @h;
+}
+@ip6: 1.17;
+@ip6p: 1.3;
+
+@font: 'Hiragino Sans GB', 'Microsoft Yahei UI', 'Microsoft Yahei', '微软雅黑', 'Segoe UI', 'Tahoma', '宋体b8b体', 'SimSun', 'sans-serif';
+
+
+// z index
+@zcloud: 0;
+@ztree: 0;
+@zlawn: 1;
+@zlawnimg: 2;
+@ztreeimg: 0;
+@zprocess: 8;
+@ztitle: 9;
+@zstone: 10;
+@zkettle: 11;
+@zmask: 12;
+@zpopup: 13;
+
+// vars
+@minpage: 320px;
+@midpage: 375px;
+@largepage: 500px;
+@maxpage: 800px;
+
+// media queries
+.lt-min-page(@rules) {
+    @media only screen and (max-width: 320px) {
+        @rules();
+    }
+}
+
+.between-min-mid-page(@rules) {
+    @media only screen and (min-width: (@minpage + 1)) and (max-width: (@midpage - 1)) {
+        @rules();
+    }
+}
+
+.gt-mid-page(@rules) {
+    @media only screen and(min-width: 375px) {
+        @rules();
+    }
+}

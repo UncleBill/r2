@@ -19,7 +19,7 @@ html {
     background-image: url(../images/triangle-right.png);
     background-repeat: no-repeat;
     background-position: right 0;
-    height: 70px;
+    height: 75px;
 }
 .project-list .project.status-closed {
     -webkit-filter: grayscale(0.8);
@@ -45,6 +45,8 @@ html {
 .project .project-info .project-path {
     font-size: 13px;
     color: @projbg - 150;
+    height: 20px;
+    overflow-y: hidden;
 }
 .project .project-link {
     position: absolute;
@@ -66,30 +68,31 @@ html {
     background-color: @projbg - 30;
 }
 .project-list .project-inner {
-    display: inline-block;
-    width: 230px;
+    min-width: 230px;
     height: 40px;
     padding: 5px 10px;
 }
 .project-list .project-new {
     background-color: @projbg - 50;
+    text-align: center;
 }
 .project-list .project-new .project-inner {
     height: 30px;
     padding: 10px;
 }
-.project-list .project-new .input-loca {
+.project-list .project-new .input-loca,
+.project-list .project-new .input-port {
     display: inline-block;
     padding: 0;
     border: 0;
-    width: 70%;
-    text-indent: 0.5em;
+    width: 50%;
     height: 30px;
     line-height: 30px;
     outline: none;
     border-radius: 2px;
     vertical-align: middle;
-    margin-left: 35px;
+    text-align: center;
+    cursor: pointer;
     -moz-transition:    all 0.3s linear;
     -ms-transition:     all 0.3s linear;
     -o-transition:      all 0.3s linear;
@@ -98,6 +101,9 @@ html {
     &[readonly=readonly] {
         background-color: #ddd;
     }
+}
+.project-list .project-new .input-port {
+    width: 20%;
 }
 .project-list .project-new .btn-create {
     &:extend(.project .project-link);
@@ -133,9 +139,15 @@ html {
 .project-list .project .project-operate .operate-item {
     display: inline-block;
     text-decoration: none;
-    background-color: #ff0;
+    background-color: @btncreate;
     width: 100%;
     text-align: center;
-    color: #00f;
+    color: #fff;
     cursor: pointer;
+    border-radius: 3px;
+    -webkit-transition: all 0.2s linear;
+    transition:         all 0.2s linear;
+}
+.project-list .project .project-operate .operate-item:hover {
+    background-color: @btncreate - 50;
 }

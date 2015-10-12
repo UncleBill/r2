@@ -62,11 +62,14 @@ $btnReload.click(loadProjects);
 // create
 $btnCreate.click(function () {
     var $newpath = $("#newpath");
+    var $newport = $("#newport");
     var path = $newpath.val();
+    var port = $newport.val();
     var apiurl = '/f5api?action=createServer';
     $newpath.attr('readOnly', true);
     $.post(apiurl, {
         'dir': path,
+        'port': port,
         'action': 'createServer'
     }, function (resp) {
         // loadProjects();

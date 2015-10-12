@@ -1,0 +1,27 @@
+                        <ul>
+                        <% for (var i = 0, len = tree.length; i < len; ++i) { %>
+                            <% if (tree[i].type == 'file') { %>
+                            <li class="file-entry">
+                                <label>
+                                    <input type="checkbox" name="selfile" value="<%= tree[i].url %>" />
+                                    <span class="icon-holder"></span>
+                                </label>
+                                <a href="/<%= tree[i].url %>" class="file" target="_blank">
+                                    <%=tree[i].url%>
+                                </a>
+                            </li>
+                            <% } else { %>
+                            <li class="subdir folded">
+                                <label>
+                                    <input type="checkbox" name="selfile" value="<%= tree[i].url %>" />
+                                    <span class="icon-holder"></span>
+                                </label>
+                                <a href="#<%= tree[i].url %>" onclick="toggleFold(this);" class="folder">
+                                    <%=tree[i].url%>
+                                </a>
+                                <a href="/<%= tree[i].url %>" target="_blank">&#8599;</a>
+                                <%- include('dir.ejs', {tree: tree[i].children}) %>
+                            </li>
+                            <% } %>
+                        <% } %>
+                        </ul>

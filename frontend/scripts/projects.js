@@ -2,6 +2,7 @@ var linkpre = location.protocol + '//' + location.hostname + ":";
 var $btnReload = $("#btnReload");
 var $btnCreate = $("#btnCreate");
 var $projectList = $("#projectList");
+var STOREKEY = 'server-list';
 
 // load projects
 // =============
@@ -17,6 +18,8 @@ function loadProjects() {
     }).done(function (list) {
         var htmlcode = [];
         var proj, obj;
+        var locals = getStoredProjects();
+        list = mergeProjects(list, locals);
         for (var i = 0, len = list.length; i < len; ++i) {
             obj = list[i];
             proj = tpl.replace(/{{(.*?)}}/gm, function (_, m) {
@@ -40,6 +43,14 @@ function loadProjects() {
         $projectList.html( htmlcode.join('') );
     });
 
+}
+
+function loadStoredProjects() {
+    var list = JSON.parse(localStorage.getItem(STOREKEY));
+    if (!list) {
+        return;
+    }
+    console.log('loadStoredProjects', list);
 }
 loadProjects();
 
@@ -65,28 +76,54 @@ $btnCreate.click(function () {
     var $newport = $("#newport");
     var path = $newpath.val();
     var port = $newport.val();
-    var apiurl = '/f5api?action=createServer';
     $newpath.attr('readOnly', true);
+    createServer({
+        dir: path,
+        port: port
+    }, function () {
+        $newpath.attr('readOnly', false);
+        $newpath.val('');
+    });
+});
+
+
+function createServer(config, callback) {
+    var apiurl = '/f5api?action=createServer';
     $.post(apiurl, {
-        'dir': path,
-        'port': port,
+        'dir': config.dir,
+        'port': config.port,
         'action': 'createServer'
     }, function (resp) {
         // loadProjects();
-        $newpath.attr('readOnly', false);
+        callback && callback();
         var obj = JSON.parse(resp);
         if (obj.success == 1) {
             loadProjects();
+            storeConfig({
+                dir: obj.dir,
+                port: obj.port
+            });
         }
-        $newpath.val('');
     })
-
-});
+}
 
 // view
 $projectList.on('click', '.project', function () {
     var $this = $(this);
     $this.addClass('selected').siblings().removeClass('selected');
+})
+
+$projectList.on('click', '.operate-restart', function (eve) {
+    eve.stopPropagation();
+    var $project = $(this).parents('.project');
+    var dir = $project.attr('data-dir');
+    var port = $project.attr('data-port');
+    createServer({
+        dir: dir,
+        port: port
+    }, function () {
+        
+    })
 })
 
 // close server
@@ -106,3 +143,67 @@ $projectList.on('click', '.operate-close', function (eve) {
         }
     });
 })
+
+
+function storeConfig(config) {
+    var list = JSON.parse(localStorage.getItem(STOREKEY)) || [];
+    list.push(config);
+    localStorage.setItem(STOREKEY, JSON.stringify(list));
+}
+
+function storeConfigList(arr) {
+    localStorage.setItem(STOREKEY, JSON.stringify(arr));
+}
+
+function getStoredProjects() {
+    var list = JSON.parse(localStorage.getItem(STOREKEY)) || [];
+    for (var i = 0; i < list.length; ++i) {
+        list[i].status = 'local';
+    }
+    return list;
+}
+
+function mergeProjects(servers, locals) {
+    var merged = servers.concat(locals);
+    merged = uniqueArr(merged, function (s1, s2) {
+        return s1.dir == s2.dir && s1.port == s2.port;
+    });
+
+    return merged;
+}
+
+
+function uniqueArr(arr, juggfunc) {
+    var resArr = [];
+    var has = false;
+    for (var i = 0; i < arr.length; ++i) {
+        for (var j = 0; j < resArr.length; ++j) {
+            if( juggfunc(resArr[j], arr[i]) ){
+                has = true;
+            }
+        }
+        if (has) {
+            continue;
+        }
+        resArr.push(arr[i]);
+        has = false;
+    }
+    return resArr;
+}
+
+
+// reset localStorage
+function resetLocalStorage() {
+    var url = '/f5api';
+    var tpl = $("#projectTpl").html();
+    $.ajax({
+        'url': url,
+        'dataType': 'json',
+        'data': {
+            'action': 'getServers'
+        }
+
+    }).done(function (list) {
+        localStorage.setItem(STOREKEY, JSON.stringify(list));
+    })
+}

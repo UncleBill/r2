@@ -14,20 +14,32 @@ html {
     color: @projtextcolor;
     position: relative;
     cursor: default;
-}
-.project-list .project.selected {
     background-image: url(../images/triangle-right.png);
     background-repeat: no-repeat;
+    background-position: right -50px;
+    -webkit-transition: all .2s linear;
+    transition:         all .2s linear;
+}
+.project-list .project.selected {
     background-position: right 0;
     height: 75px;
 }
+.project-list .project.status-local,
 .project-list .project.status-closed {
     -webkit-filter: grayscale(0.8);
-    opacity: 0.6; filter: alpha(opacity=60);
+    filter: grayscale(0.8);
 }
-.project-list .project.selected .project-inner {
+.project-list .project-inner {
+    min-width: 230px;
+    height: 40px;
+    padding: 5px 10px;
     background-image: url(../images/triangle-left.png);
     background-repeat: no-repeat;
+    background-position: left -50px;
+    -webkit-transition: all .2s linear;
+    transition:         all .2s linear;
+}
+.project-list .project.selected .project-inner {
     background-position: left center;
 }
 .project .project-info .project-name {
@@ -66,11 +78,6 @@ html {
 }
 .project-list .project:nth-child(odd){
     background-color: @projbg - 30;
-}
-.project-list .project-inner {
-    min-width: 230px;
-    height: 40px;
-    padding: 5px 10px;
 }
 .project-list .project-new {
     background-color: @projbg - 50;
@@ -150,4 +157,18 @@ html {
 }
 .project-list .project .project-operate .operate-item:hover {
     background-color: @btncreate - 50;
+}
+
+.operate-list {
+    margin-top: 10px;
+    padding-left: 10px;
+}
+.operate-list ul {
+    padding-left: 10px;
+    margin-left: 10px;
+    margin-top: 5px;
+}
+.operate-list ul li {
+    margin-bottom: 5px;
+    list-style-type: square;
 }

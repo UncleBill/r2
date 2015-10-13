@@ -5,7 +5,7 @@
         <link rel="stylesheet" type="text/css" href="styles/project.css" />
         <script src="scripts/jquery-1.8.3.min.js" type="text/javascript" charset="utf-8"></script>
         <script type="text/template" id="projectTpl">
-            <div class="project status-{{status}}" data-dir="{{projectPath}}">
+            <div class="project status-{{status}}" data-dir="{{projectPath}}" data-port="{{projectPort}}">
                 <div class="project-inner">
                     <div class="project-info">
                         <a class="project-name" href="{{projectLink}}" target="main">
@@ -40,6 +40,16 @@
                     <a class="btn-item btn-reload" id="btnReload" href="javascript:void(0);"></a>
                 </div>
             </div>
+        </div>
+        <div class="operate-list">
+            Operates:
+            <ul>
+                <li>
+                    <a href="javascript:void(0);" onclick="resetLocalStorage();" title="clear localStorage, and set it as server">
+                        reset localStorage
+                    </a>
+                </li>
+            </ul>
         </div>
         <script src="scripts/projects.js" type="text/javascript" charset="utf-8"></script>
     </body>

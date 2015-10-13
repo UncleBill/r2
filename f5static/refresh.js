@@ -45,6 +45,8 @@ var insertAfter = function (newEle, referenceEle) {
 
 var reloadTag = function( attcher ){
     var element = attcher.element;
+    window.location.reload();
+    return element;
     if (!element) {
         return;
     }
@@ -86,8 +88,8 @@ socket.on('reload', function ($data) {
     if( pathname === '/' + $data ){
         window.location.reload();
     } else {
+        var url = location.protocol + "//" + location.host + "/" + $data;
         for(var i = 0; i < attachers.length; ++i){
-            var url = location.protocol + "//" + location.host + $data.slice(1);
             if(url == attachers[i].file) {
                 var element = reloadTag( attachers[i] );
                 attachers[i].element = element;

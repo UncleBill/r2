@@ -3,6 +3,9 @@
   "version": "0.1.1",
   "description": "F5 version 2, a front-end development tool.",
   "main": "index.js",
+  "bin": {
+      "f5r2": "./bin/f5r2"
+  },
   "scripts": {
     "test": "node test.js",
     "debug": "node debug test.js"

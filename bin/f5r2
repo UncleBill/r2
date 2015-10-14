@@ -1,0 +1,42 @@
+#!/usr/bin/env node
+
+var F5R2   = require("../lib/f5r2"),
+    fs   = require('fs'),
+    net  = require('net'),
+    http = require('http'),
+    qstr = require('querystring'),
+    path = require('path'),
+    port = 3000;
+
+var f5 = new F5R2();
+var argvs = process.argv;
+port = parseInt(argvs[argvs.length - 1]) || port;
+var count = 0;
+var hasserver = false;
+
+var tryport = function(p) {
+    count ++;
+    if (count > 50) {
+        return;
+    }
+    if (p >= 0xffff) {
+        return;
+    }
+    var tester = net.createServer().once('error', function(err){
+            console.warn('port', p, 'is in use');
+            port = p + 50;
+            hasserver = true;
+            tryport(port);
+        }).once('listening', function () {
+            console.log('Listening on', p);
+            tester.once('close', function () {
+                f5.start(port);
+                console.log('start main server at', f5.config.port);
+            }).close();
+        })
+        .listen(p);
+};
+
+
+tryport(port);
+

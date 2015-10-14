@@ -17,32 +17,6 @@ $pickForm.submit(function (e) {
     })
 })
 
-$pickForm.on('change', function () {
-    var $sel = $pickForm.find("[name=selfile]:checked");
-    var $folders = $pickForm.find("[name=selfolder]:checked");
-    var files = [],
-        folders = [];
-    var tree = {};
-    $sel.each(function () {
-        files.push( this.value );
-        fp2tree(this.value, tree);
-    });
-    $folders.each(function () {
-        folders.push(this.value);
-    })
-    // console.log(tree);
-    var data = {
-        tree: tree,
-        files: files,
-        folders: folders
-    };
-    if (window.localStorage) {
-        localStorage.setItem(rootpath, JSON.stringify(data))
-    }
-    // console.log(buildHtml(tree));
-    renderTree(tree, files);
-    renderFiletype(files);
-});
 
 restore();
 
@@ -96,43 +70,93 @@ $("#filetypes").on('click', 'input', function () {
     }
 })
 
+
+// ================================================================================
+var $pickBtn = $("#pickBtn");
+var $fileTree = $("#fileTree");
+var $pickFileTree = $("#pickFileTree");
+var rootdir = $("#rootdir").attr('data-root');
+
+$pickBtn.click(function () {
+    var data = queryTreeData($fileTree);
+    $.ajax({
+        type: 'post',
+        url: '/f5api',
+        data: {
+            files: data.files,
+            action: 'pickFiles',
+            rootdir: rootdir
+        }
+    }).done(function (log) {
+        console.log(log);
+    })
+});
+
+$fileTree.on('click', 'input[type=checkbox]', function () {
+    var ischecked = this.checked;
+    if (this.name == 'selfolder') {
+        $(this).parents(".subdir").find("input[type=checkbox]").each(function () {
+            this.checked = ischecked;
+        });
+    }
+    var treedata = queryTreeData($fileTree);
+    renderTree(treedata.tree, treedata.files);
+    renderFiletype(treedata.files);
+});
+
+function queryTreeData($container) {
+    var $files = $container.find("[name=selfile]:checked");
+    var $folders = $container.find("[name=selfolder]:checked");
+    var files = [],
+        folders = [];
+    var tree = {};
+
+    $files.each(function () {
+        files.push(this.value);
+        fpath2tree(this.value, tree);
+    });
+    $folders.each(function () {
+        folders.push(this.value);
+    });
+
+    var data = {
+        tree: tree,
+        files: files,
+        folders: folders
+    };
+    if (window.localStorage) {
+        localStorage.setItem(rootdir, JSON.stringify(data));
+    }
+    return data;
+}
+
 function renderTree(tree, files) {
     var htmlcode = "<div>Total: " + files.length + "</div>";
     htmlcode += buildHtml( tree );
     if (files.length) {
         $(".wrapper").addClass('splited');
-        $("#pick-file-tree").html(htmlcode)
+        $pickFileTree.html(htmlcode)
     } else {
         $(".wrapper").removeClass('splited');
-        $("#pick-file-tree").html('');
+        $pickFileTree.html('');
     }
 }
 
-
-$pickForm.find("[name=selfolder]").click(function () {
-    var checked = this.checked;
-    $(this).parent(".subdir").find("[type=checkbox]").each(function () {
-        this.checked = checked;
-    })
-    $pickForm.trigger('change');
-})
-
-
-function fp2tree(fp, tree) {
-    var first = fp.indexOf('/');
-    var next = fp.indexOf('/', first+1);
+function fpath2tree(fpath, tree) {
+    var first = fpath.indexOf('/');
+    var next = fpath.indexOf('/', first+1);
     var folder;
     if (next != -1) {
-        folder = fp.substring(first+1, next);
+        folder = fpath.substring(first+1, next);
         if (tree[folder]) {
-            return fp2tree(fp.substring(next+1), tree[folder])
+            return fpath2tree(fpath.substring(next+1), tree[folder])
         } else {
             var newFolder = {}
-            tree[folder] = fp2tree(fp.substring(next), newFolder)
+            tree[folder] = fpath2tree(fpath.substring(next), newFolder)
             return tree;
         }
     } else {
-        tree[fp.substring(first+1)] = fp.substring(first+1);
+        tree[fpath.substring(first+1)] = fpath.substring(first+1);
         return tree;
     }
 }
@@ -172,4 +196,3 @@ function buildpool(tree, htmlArr, deep) {
 
     return htmlArr
 }
-

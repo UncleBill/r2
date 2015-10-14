@@ -14,8 +14,8 @@
                         &#x21e7;
                         parent folder
                     </a>
-                    <div id="rootPath" data-root="<%= rootpath %>"><%= rootpath %></div>
-                    <div id="file-tree" class="file-tree">
+                    <div id="rootdir" data-root="<%= rootpath %>"><%= rootpath %></div>
+                    <div id="fileTree" class="file-tree">
                         <%- include('./dir.ejs', {tree: tree}) %>
                     </div>
                 </div>
@@ -23,11 +23,11 @@
             <div id="pickTree" class="pick-tree tree-container">
                 <div class="tree-padding">
                     <div>
-                        <input type="submit" value="pack">
-                        <input type="reset" value='clear'>
+                        <button class="btn-item pick-btn" id="pickBtn">pack</button>
+                        <button class="btn-item clear-btn" id="clearBtn">clear</button>
                     </div>
                     <div id="filetypes" class="filetypes"></div>
-                    <div id="pick-file-tree" class="file-tree"></div>
+                    <div id="pickFileTree" class="file-tree"></div>
                     <div id="msg"></div>
                 </div>
             </form>

@@ -95,7 +95,7 @@ function createServer(config, callback) {
         'action': 'createServer'
     }, function (resp) {
         // loadProjects();
-        callback && callback();
+        callback && callback(resp);
         var obj = JSON.parse(resp);
         if (obj.success == 1) {
             loadProjects();
@@ -114,15 +114,17 @@ $projectList.on('click', '.project', function () {
 })
 
 $projectList.on('click', '.operate-restart', function (eve) {
-    eve.stopPropagation();
     var $project = $(this).parents('.project');
     var dir = $project.attr('data-dir');
     var port = $project.attr('data-port');
     createServer({
         dir: dir,
         port: port
-    }, function () {
-        
+    }, function (resp) {
+        var obj = JSON.parse(resp);
+        var port = obj.port;
+        var url = location.protocol + "//" + location.hostname + ":" + port;
+        setMainFrame(url);
     })
 })
 
@@ -183,6 +185,7 @@ function uniqueArr(arr, juggfunc) {
             }
         }
         if (has) {
+            has = false;
             continue;
         }
         resArr.push(arr[i]);
@@ -206,4 +209,8 @@ function resetLocalStorage() {
     }).done(function (list) {
         localStorage.setItem(STOREKEY, JSON.stringify(list));
     })
+}
+
+function setMainFrame(url) {
+    $("#mainFrame").attr('src', url);
 }

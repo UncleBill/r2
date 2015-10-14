@@ -1,6 +1,31 @@
 html {
     background-color: #ffde78;
 }
+html,
+body {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    overflow-y: hidden;
+}
+.side {
+    width: 300px;
+    float: left;
+    overflow-y: auto;
+    height: 100%;
+}
+.main {
+    margin-left: 300px;
+    /* float: left; */
+    height: 100%;
+}
+.main .main-frame {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    padding: 0;
+    margin: 0;
+}
 .project-list {
     background-color: #F6F6EF;
 }
@@ -12,7 +37,7 @@ html {
     cursor: default;
     background-image: url(../images/triangle-right.png);
     background-repeat: no-repeat;
-    background-position: right -50px;
+    background-position: 300px 0;
     -webkit-transition: all .2s linear;
     transition: all .2s linear;
 }
@@ -29,14 +54,6 @@ html {
     min-width: 230px;
     height: 40px;
     padding: 5px 10px;
-    background-image: url(../images/triangle-left.png);
-    background-repeat: no-repeat;
-    background-position: left -50px;
-    -webkit-transition: all .2s linear;
-    transition: all .2s linear;
-}
-.project-list .project.selected .project-inner {
-    background-position: left center;
 }
 .project .project-info .project-name {
     font-size: 15px;
@@ -97,7 +114,7 @@ html {
     border-radius: 2px;
     vertical-align: middle;
     text-align: center;
-    cursor: pointer;
+    /* cursor: pointer; */
     -moz-transition: all 0.3s linear;
     -ms-transition: all 0.3s linear;
     -o-transition: all 0.3s linear;
@@ -156,6 +173,7 @@ html {
 .operate-list {
     margin-top: 10px;
     padding-left: 10px;
+    margin-bottom: 20px;
 }
 .operate-list ul {
     padding-left: 10px;

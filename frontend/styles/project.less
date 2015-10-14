@@ -2,8 +2,34 @@
 @projbg: #ff6600;
 @btncreate: @projbg + 30;
 @projtextcolor: #eee;
+@sidewidth: 300px;
 html {
     background-color: @prolistbg;
+}
+html,
+body {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    overflow-y: hidden;
+}
+.side {
+    width: @sidewidth;
+    float: left;
+    overflow-y: auto;
+    height: 100%;
+}
+.main {
+    margin-left: @sidewidth;
+    /* float: left; */
+    height: 100%;
+}
+.main .main-frame {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    padding: 0;
+    margin: 0;
 }
 .project-list {
     background-color: #F6F6EF;
@@ -16,7 +42,7 @@ html {
     cursor: default;
     background-image: url(../images/triangle-right.png);
     background-repeat: no-repeat;
-    background-position: right -50px;
+    background-position: @sidewidth 0;
     -webkit-transition: all .2s linear;
     transition:         all .2s linear;
 }
@@ -33,15 +59,15 @@ html {
     min-width: 230px;
     height: 40px;
     padding: 5px 10px;
-    background-image: url(../images/triangle-left.png);
-    background-repeat: no-repeat;
-    background-position: left -50px;
-    -webkit-transition: all .2s linear;
-    transition:         all .2s linear;
+//    background-image: url(../images/triangle-left.png);
+//    background-repeat: no-repeat;
+//    background-position: left -50px;
+//    -webkit-transition: all .2s linear;
+//    transition:         all .2s linear;
 }
-.project-list .project.selected .project-inner {
-    background-position: left center;
-}
+//.project-list .project.selected .project-inner {
+//    background-position: left center;
+//}
 .project .project-info .project-name {
     font-size: 15px;
     color: @projtextcolor;
@@ -99,7 +125,7 @@ html {
     border-radius: 2px;
     vertical-align: middle;
     text-align: center;
-    cursor: pointer;
+    /* cursor: pointer; */
     -moz-transition:    all 0.3s linear;
     -ms-transition:     all 0.3s linear;
     -o-transition:      all 0.3s linear;
@@ -162,6 +188,7 @@ html {
 .operate-list {
     margin-top: 10px;
     padding-left: 10px;
+    margin-bottom: 20px;
 }
 .operate-list ul {
     padding-left: 10px;

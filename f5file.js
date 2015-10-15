@@ -29,10 +29,12 @@ function compileless(fname, ext) {
     var basename = path.basename(fname, ext);
     var dist = path.join(dirname, basename + ".css");
     var lesscode = fs.readFileSync(fname).toString();
+    var _filename = path.join(__dirname, path.relative(__dirname, dirname), basename+ext);
+    console.log("_filename", _filename);
 
     less.render(lesscode, {
-        'paths': ['.'],
-        'filename': 'styles/'+basename+ext,
+        'paths': [__dirname],
+        'filename': _filename,
         'compress': false,
         'sourceMap': true,
         'sourceMapFileInline': true,

@@ -74,6 +74,23 @@ ul li .icon-holder {
 .tree-container .tree-padding {
     padding: 10px;
 }
+.tree-container .pwd {
+    display: inline-block;
+    font-family: 'Microsoft Yahei', simhei;
+}
+.tree-container .pwd .link-item {
+    display: inline-block;
+    background-color: #eef;
+    border-radius: 3px;
+    text-decoration: none;
+    padding: 3px 8px;
+    height: 25px;
+    line-height: 25px;
+    vertical-align: middle;
+}
+.tree-container .pwd .link-item:hover {
+    background-color: #ddf;
+}
 .file-tree .file-entry {
     position: relative;
 }

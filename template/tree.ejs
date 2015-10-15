@@ -12,17 +12,19 @@
             }
         </script>
         <% } %>
-
     </head>
     <body>
         <div class="wrapper">
             <div id="mainTree" class="main-tree tree-container">
                 <div class="tree-padding">
-                    <a href="javascript:void(0);" id="parent">
-                        &#x21e7;
-                        parent folder
-                    </a>
-                    <div id="rootdir" data-root="<%= rootpath %>"><%= rootpath %></div>
+                    <div id="pwd" 
+                        class="pwd" 
+                        data-localip="<%= localip %>"
+                        data-root="<%= rootpath %>" 
+                        data-pwd="<%= pwd %>">
+                        <%= pwd %>
+                    </div>
+                    <div id="filetypes" class="filetypes"></div>
                     <div id="fileTree" class="file-tree">
                         <%- include('./dir.ejs', {tree: tree}) %>
                     </div>
@@ -34,7 +36,6 @@
                         <button class="btn-item pick-btn" id="pickBtn">pack</button>
                         <button class="btn-item clear-btn" id="clearBtn">clear</button>
                     </div>
-                    <div id="filetypes" class="filetypes"></div>
                     <div id="pickFileTree" class="file-tree"></div>
                     <div id="msg"></div>
                 </div>

@@ -6,7 +6,7 @@
                                     <input type="checkbox" name="selfile" value="/<%= tree[i].url %>" />
                                     <span class="icon-holder"></span>
                                 </label>
-                                <a href="/<%= tree[i].url %>" class="file" target="_blank">
+                                <a href="/<%= tree[i].url %>" class="file" data-mime="<%= tree[i].mime %>" target="_blank">
                                     <%=tree[i].url%>
                                 </a>
                             </li>

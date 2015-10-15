@@ -51,18 +51,20 @@ var setUrlContainer = function( url ){
 
 // image holder handling
 // ---------------------
-$("<div id='image_holder' />").appendTo($("body")).hide();
-var $image_holder = $("#image_holder");
+var $image_holder = $("<div id='image_holder' style='max-width: 300px;-webkit-transition:all 0.3s linear' />").appendTo($("body")).hide();
+var $wrapper = $(".wrapper");
+var imgmimes = ['images/bmp', 'image/gif', 'image/jpeg', 'image/png', 'image/webp'];
+$wrapper.on('mouseover', '.file-entry', function () {
+    var $this = $(this).find('.file');
+    var mime = $this.attr('data-mime');
+    var href = $this.attr('href');
+    if (imgmimes.indexOf(mime) > -1) {
+        $image_holder.show().html( "<img src='" + href + "' width='100%' />"  );
+    }
+}).on('mouseout', '.file-entry', function () {
+    $image_holder.hide();
+});
 
-$(".ft_image").each( function( index ){
-    var $target = $(this);
-    $target.hover( function(){
-        var $href =  this.href;
-        $image_holder.show().html( "<img src='" + $href + "' />"  ).pos;
-    },function(){
-        $image_holder.hide();
-    } );
-} );
 // file manage : delete
 // --------------------
 

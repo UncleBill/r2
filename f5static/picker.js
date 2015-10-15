@@ -75,7 +75,7 @@ $("#filetypes").on('click', 'input', function () {
 var $pickBtn = $("#pickBtn");
 var $fileTree = $("#fileTree");
 var $pickFileTree = $("#pickFileTree");
-var rootdir = $("#rootdir").attr('data-root');
+var rootdir = $("#pwd").attr('data-root');
 
 $pickBtn.click(function () {
     var data = queryTreeData($fileTree);
@@ -95,12 +95,14 @@ $pickBtn.click(function () {
 $fileTree.on('click', 'input[type=checkbox]', function () {
     var ischecked = this.checked;
     if (this.name == 'selfolder') {
-        $(this).parents(".subdir").find("input[type=checkbox]").each(function () {
+        $(this).closest(".subdir").find("input[type=checkbox]").each(function () {
             this.checked = ischecked;
         });
     }
     var treedata = queryTreeData($fileTree);
-    renderTree(treedata.tree, treedata.files);
+    // renderTree(treedata.tree, treedata.files);
+    cloneTree();
+    $(".wrapper").toggleClass('splited', treedata.files.length > 0);
     renderFiletype(treedata.files);
 });
 
@@ -140,6 +142,42 @@ function renderTree(tree, files) {
         $(".wrapper").removeClass('splited');
         $pickFileTree.html('');
     }
+}
+
+function cloneTree() {
+    $pickFileTree.html('');
+    var clone = $fileTree.children().clone().appendTo("#pickFileTree");
+    var $files = $pickFileTree.find('.file-entry');
+    var $folders = $pickFileTree.find('.subdir');
+
+    // return;
+    // remove unselected files
+    $files.each(function () {
+        var $this = $(this);
+        var $input = $this.find('input[name=selfile]');
+        // if ($input && $input[0] && $input[0].checked) {
+        if (!$input[0].checked) {
+            $this.remove();
+        }
+    });
+
+    // remove folders have no child been selected
+    $folders.each(function () {
+        var $this = $(this);
+        var selected = false;
+        var $files = $this.find('.file-entry');
+        $files.each(function () {
+            var $file = $(this);
+            var $input = $file.find('input[name=selfile]');
+            if ($input[0].checked) {
+                selected = true;
+            }
+        })
+
+        if (!selected) {
+            $this.remove();
+        }
+    })
 }
 
 function fpath2tree(fpath, tree) {

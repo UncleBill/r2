@@ -2,7 +2,6 @@ var linkpre = location.protocol + '//' + location.hostname + ":";
 var $btnReload = $("#btnReload");
 var $btnCreate = $("#btnCreate");
 var $projectList = $("#projectList");
-var STOREKEY = 'server-list';
 
 // load projects
 // =============
@@ -18,8 +17,6 @@ function loadProjects() {
     }).done(function (list) {
         var htmlcode = [];
         var proj, obj;
-        var locals = getStoredProjects();
-        list = mergeProjects(list, locals);
         for (var i = 0, len = list.length; i < len; ++i) {
             obj = list[i];
             proj = tpl.replace(/{{(.*?)}}/gm, function (_, m) {
@@ -45,13 +42,6 @@ function loadProjects() {
 
 }
 
-function loadStoredProjects() {
-    var list = JSON.parse(localStorage.getItem(STOREKEY));
-    if (!list) {
-        return;
-    }
-    console.log('loadStoredProjects', list);
-}
 loadProjects();
 
 
@@ -99,10 +89,6 @@ function createServer(config, callback) {
         var obj = JSON.parse(resp);
         if (obj.success == 1) {
             loadProjects();
-            storeConfig({
-                dir: obj.dir,
-                port: obj.port
-            });
         }
     })
 }
@@ -147,70 +133,42 @@ $projectList.on('click', '.operate-close', function (eve) {
 })
 
 
-function storeConfig(config) {
-    var list = JSON.parse(localStorage.getItem(STOREKEY)) || [];
-    list.push(config);
-    localStorage.setItem(STOREKEY, JSON.stringify(list));
-}
 
-function storeConfigList(arr) {
-    localStorage.setItem(STOREKEY, JSON.stringify(arr));
-}
-
-function getStoredProjects() {
-    var list = JSON.parse(localStorage.getItem(STOREKEY)) || [];
-    for (var i = 0; i < list.length; ++i) {
-        list[i].status = 'local';
-    }
-    return list;
-}
-
-function mergeProjects(servers, locals) {
-    var merged = servers.concat(locals);
-    merged = uniqueArr(merged, function (s1, s2) {
-        return s1.dir == s2.dir && s1.port == s2.port;
-    });
-
-    return merged;
-}
-
-
-function uniqueArr(arr, juggfunc) {
-    var resArr = [];
-    var has = false;
-    for (var i = 0; i < arr.length; ++i) {
-        for (var j = 0; j < resArr.length; ++j) {
-            if( juggfunc(resArr[j], arr[i]) ){
-                has = true;
-            }
-        }
-        if (has) {
-            has = false;
-            continue;
-        }
-        resArr.push(arr[i]);
-        has = false;
-    }
-    return resArr;
-}
-
-
-// reset localStorage
-function resetLocalStorage() {
-    var url = '/f5api';
-    var tpl = $("#projectTpl").html();
-    $.ajax({
-        'url': url,
-        'dataType': 'json',
-        'data': {
-            'action': 'getServers'
-        }
-
-    }).done(function (list) {
-        localStorage.setItem(STOREKEY, JSON.stringify(list));
-    })
-}
 
 function setMainFrame(url) {
     $("#mainFrame").attr('src', url);
 }
+
+
+// input directory
+var $directories = $("#directories");
+var $newpath = $("#newpath");
+$newpath.on('change keyup paste', loadDirectories);
+function loadDirectories() {
+    var dir = $newpath.val();
+    $.ajax({
+        url: '/f5api',
+        dataType: 'json',
+        data: {
+            action: 'getDirectories',
+        dir: dir
+        }
+    }).done(function (list) {
+        if (!list.length) {
+            list = ['c:\\','d:\\','e:\\','f:\\'];
+        }
+        var html = ['<ul>'];
+        html = list.map(function (folder) {
+            var p = folder.path || folder;
+            return "<li data-path='" + p + "'>"  + p + "</li>";
+        })
+        html.push('<ul>');
+        $directories.html( html.join('\n') );
+    })
+}
+
+$directories.on('click', 'li', function () {
+    $newpath.val($(this).attr('data-path'));
+    loadDirectories();
+    
+})

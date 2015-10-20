@@ -133,6 +133,21 @@ body {
     background-image: url(../images/icon-reload.png);
     border-radius: 30px;
 }
+.project-list .project-new .directories {
+    position: absolute;
+    width: 80%;
+    top: 40px;
+    background-color: #fff;
+    color: #333;
+    max-height: 100px;
+    overflow-y: scroll;
+    text-align: left;
+    left: 50%;
+    margin-left: -40%;
+}
+.project-list .project-new .directories li:nth-child(odd) {
+    background-color: #ddd;
+}
 .project-list .project .project-close {
     position: absolute;
     background-color: #00f;

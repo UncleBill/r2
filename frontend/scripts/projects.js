@@ -114,6 +114,26 @@ $projectList.on('click', '.operate-restart', function (eve) {
     })
 })
 
+$projectList.on('click', '.project-name', function (eve) {
+    var $project = $(this).parents('.project');
+    var dir, port;
+    if (!$project.hasClass('status-running')) {
+        eve.preventDefault();
+        eve.stopPropagation();
+        dir = $project.attr('data-dir');
+        port = $project.attr('data-port');
+        createServer({
+            dir: dir,
+            port: port
+        }, function (resp) {
+            var obj = JSON.parse(resp);
+            var port = obj.port;
+            var url = location.protocol + "//" + location.hostname + ":" + port;
+            setMainFrame(url);
+        });
+    }
+});
+
 // close server
 $projectList.on('click', '.operate-close', function (eve) {
     eve.stopPropagation();

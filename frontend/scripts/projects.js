@@ -171,4 +171,8 @@ $directories.on('click', 'li', function () {
     $newpath.val($(this).attr('data-path'));
     loadDirectories();
     
-})
+});
+
+function closeF5R2() {
+    socket.emit('close');
+}

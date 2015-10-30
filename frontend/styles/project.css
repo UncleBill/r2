@@ -71,7 +71,7 @@ body {
     font-size: 13px;
     color: #690000;
     height: 20px;
-    overflow-y: hidden;
+    overflow: hidden;
 }
 .project .project-link,
 .project-list .project-new .btn-create,

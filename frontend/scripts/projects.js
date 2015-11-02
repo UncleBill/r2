@@ -197,6 +197,26 @@ function closeF5R2() {
     socket.emit('close');
 }
 
+
+// clear history
+// =============
+$("#operateClearHistory").click(function () {
+    var yes = confirm('Clear All history?');
+    if (!yes) {
+        return;
+    }
+    var apiurl = '/f5api';
+    $.post(apiurl, {
+        action: 'clearHistory'
+    }, function (resp) {
+        var obj = JSON.parse(resp);
+        if (obj.success) {
+            loadProjects();
+        }
+    })
+});
+
+
 // read version
 readVersion();
 function readVersion() {

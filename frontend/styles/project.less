@@ -18,11 +18,12 @@ body {
     float: left;
     overflow-y: auto;
     height: 100%;
+    padding-bottom: 20px;
 }
 .main {
     margin-left: @sidewidth;
-    /* float: left; */
     height: 100%;
+    min-width: 800px;
 }
 .main .main-frame {
     width: 100%;
@@ -50,10 +51,15 @@ body {
     background-position: right 0;
     height: 75px;
 }
-.project-list .project.status-local,
 .project-list .project.status-closed {
     -webkit-filter: grayscale(0.8);
     filter: grayscale(0.8);
+}
+.project-list .project.status-closed .project-link {
+    opacity: 0.4; filter: alpha(opacity=40);
+}
+.project-list .project.status-closed .project-link:hover {
+    opacity: 1; filter: alpha(opacity=100);
 }
 .project-list .project-inner {
     min-width: 230px;
@@ -203,7 +209,6 @@ body {
 .operate-list {
     margin-top: 10px;
     padding-left: 10px;
-    margin-bottom: 20px;
 }
 .operate-list ul {
     padding-left: 10px;

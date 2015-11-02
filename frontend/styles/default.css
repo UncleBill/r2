@@ -78,5 +78,20 @@ input[type=tel] {
     margin-right: auto;
 }
 html {
-    background-color: #f3f4f6;
+    background-color: #ddd;
+}
+.message {
+    height: 300px;
+    line-height: 300px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    margin: auto;
+    text-align: center;
+    font-size: 40px;
+    text-shadow: 1px 1px #fff;
+    color: #888;
+    font-weight: bold;
 }

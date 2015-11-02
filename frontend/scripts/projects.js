@@ -196,3 +196,19 @@ $directories.on('click', 'li', function () {
 function closeF5R2() {
     socket.emit('close');
 }
+
+// read version
+readVersion();
+function readVersion() {
+    var url = '/f5api';
+    var $version = $(".version");
+    $.ajax({
+        'url': url,
+        'dataType': 'json',
+        'data': {
+            'action': 'getVersion'
+        }
+    }).done(function (obj) {
+        $version.text('Version: ' + obj.version);
+    })
+}

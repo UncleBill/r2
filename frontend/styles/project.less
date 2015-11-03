@@ -154,16 +154,34 @@ body {
     border-radius: 30px;
 }
 .project-list .project-new .directories {
+    display: block;
     position: absolute;
-    width: 80%;
-    top: 40px;
+    top: 50px;
     background-color: #fff;
     color: #333;
-    max-height: 100px;
-    overflow-y: scroll;
+    max-height: 300px;
+    overflow-y: auto;
     text-align: left;
-    left: 50%;
-    margin-left: -40%;
+    left: 0;
+    right: 0;
+    border: 2px solid #FF841E;
+}
+.project-list .project-new .directories.hide {
+    display: none;
+}
+.project-list .project-new .directories li {
+    padding: 3px 5px;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    -ms-transition:     all 0.2s linear;
+    -webkit-transition: all 0.2s linear;
+    transition:         all 0.2s linear;
+}
+.project-list .project-new .directories li:hover {
+    color: #339;
+    border-left-color: #FF841E;
+    border-right: 3px solid #FF841E;
+    cursor: pointer;
 }
 .project-list .project-new .directories li:nth-child(odd) {
     background-color: #ddd;
@@ -207,7 +225,7 @@ body {
 }
 
 .operate-list {
-    margin-top: 10px;
+    margin-top: 30px;
     padding-left: 10px;
 }
 .operate-list ul {

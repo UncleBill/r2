@@ -163,9 +163,22 @@ function setMainFrame(url) {
 // input directory
 var $directories = $("#directories");
 var $newpath = $("#newpath");
-$newpath.on('change keyup paste', loadDirectories);
-function loadDirectories() {
-    var dir = $newpath.val();
+$newpath.on('keyup paste click', function (eve) {
+    eve.stopPropagation()
+    loadDirectories();
+});
+$directories.on('click', 'li', function (eve) {
+    eve.stopPropagation();
+    var dir = $(this).attr('data-path');
+    loadDirectories(dir);
+    $newpath.val(dir);
+    
+});
+$(document).click(function () {
+    $directories.addClass('hide');
+});
+function loadDirectories(dir) {
+    dir = dir || $newpath.val().trim();
     $.ajax({
         url: '/f5api',
         dataType: 'json',
@@ -174,24 +187,16 @@ function loadDirectories() {
         dir: dir
         }
     }).done(function (list) {
-        if (!list.length) {
-            list = ['c:\\','d:\\','e:\\','f:\\'];
-        }
         var html = ['<ul>'];
-        html = list.map(function (folder) {
+        html = html.concat( list.map(function (folder) {
             var p = folder.path || folder;
             return "<li data-path='" + p + "'>"  + p + "</li>";
-        })
-        html.push('<ul>');
-        $directories.html( html.join('\n') );
+        }) )
+        html.push('</ul>');
+        $directories.html( html.join('\n') ).removeClass('hide');
     })
 }
 
-$directories.on('click', 'li', function () {
-    $newpath.val($(this).attr('data-path'));
-    loadDirectories();
-    
-});
 
 function closeF5R2() {
     socket.emit('close');

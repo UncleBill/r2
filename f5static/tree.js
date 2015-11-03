@@ -106,12 +106,6 @@ function path2links(pwd, root){
             name: dirs[i]
         }));
     }
-    function tpl(data){
-        var atpl = "<a href='{{url}}' class='link-item'>{{name}}</a>";
-        return atpl.replace(/{{(.*?)}}/gmi, function(_,p){
-            return data[p];
-        });
-    };
 
     function dirlist(rltpath){
         var res = [];
@@ -130,12 +124,23 @@ function path2links(pwd, root){
 
 }
 
+function tpl(data){
+    var atpl = "<a href='{{url}}' class='link-item'>{{name}}</a>";
+    return atpl.replace(/{{(.*?)}}/gmi, function(_,p){
+        return data[p];
+    });
+};
+
 function renderLinks() {
     var $pwd = $("#pwd");
     var pwd = $pwd.attr('data-pwd');
     var root = $pwd.attr('data-root');
-
-    $pwd.html(path2links(pwd, root));
+    var mainport = $pwd.attr('data-mainport');
+    var home = tpl({
+        url : '//' + location.hostname + ":" + mainport,
+        name: "&#8962;"
+    });
+    $pwd.html(home + " " + path2links(pwd, root));
 }
 
 renderLinks();

@@ -79,19 +79,22 @@ input[type=tel] {
 }
 html {
     background-color: #ddd;
+    height: 100%;
+    width: 100%;
+}
+body {
+    display: table;
+    height: 100%;
+    width: 100%;
+    text-align: center;
 }
 .message {
-    height: 300px;
-    line-height: 300px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 0;
-    margin: auto;
+    display: table-cell;
+    vertical-align: middle;
     text-align: center;
     font-size: 40px;
     text-shadow: 1px 1px #fff;
     color: #888;
     font-weight: bold;
+    padding: 10px;
 }

@@ -100,7 +100,7 @@ function path2links(pwd, root){
     var name, url;
 
     for(var i = 0, len = dirs.length; i<len; i++){
-        url = '/' + dirs.slice(0,i).join('/');
+        url = '/' + dirs.slice(0,i+1).join('/');
         html.push(tpl({
             url: url,
             name: dirs[i]

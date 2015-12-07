@@ -125,7 +125,7 @@ function path2links(pwd, root){
 }
 
 function tpl(data){
-    var atpl = "<a href='{{url}}' class='link-item'>{{name}}</a>";
+    var atpl = "<a href='{{url}}' class='link-item pjax-item'>{{name}}</a>";
     return atpl.replace(/{{(.*?)}}/gmi, function(_,p){
         return data[p];
     });

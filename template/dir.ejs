@@ -19,7 +19,7 @@
                                 <a href="#<%= tree[i].url %>" onclick="toggleFold(this);" class="folder">
                                     <%=tree[i].url%>
                                 </a>
-                                <a href="/<%= tree[i].url %>">&#8599;</a>
+                                <a href="/<%= tree[i].url %>" class="pjax-item">&#8594;</a>
                                 <%- include('dir.ejs', {tree: tree[i].children}) %>
                             </li>
                             <% } %>

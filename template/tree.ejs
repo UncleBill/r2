@@ -5,6 +5,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">   
         <title><%= pwd %></title>
         <link rel="stylesheet" href="/f5static/tree.css" type="text/css" charset="utf-8">
+        <link rel="stylesheet" href="/f5static/nprogress.css" type="text/css" charset="utf-8">
+        <script src="/f5static/jquery.js"></script>
+        <script src="/f5static/jquery.pjax.js"></script>
+        <script src="/f5static/nprogress.js" type="text/javascript" charset="utf-8"></script>
         <% if(ismain) { %>
         <script type="text/javascript">
             if (location.pathname == "/" && location.search != '?debug') {
@@ -12,6 +16,11 @@
             }
         </script>
         <% } %>
+        <script type="text/javascript">
+            $(document).pjax(".pjax-item", '.wrapper');
+            $(document).on('pjax:start', function() { NProgress.start(); });
+            $(document).on('pjax:end',   function() { NProgress.done();  });
+        </script>
     </head>
     <body>
         <div class="wrapper">
@@ -44,7 +53,6 @@
             <div class="clear" style="clear:both"></div>
         </div>
         <script src="/socket.io/socket.io.js"></script>
-        <script src="/f5static/jquery-min.js"></script>
         <script type="text/javascript">
             var socket = io.connect(location.hostname);
             socket.on('reload', function (data) {

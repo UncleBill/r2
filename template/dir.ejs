@@ -3,7 +3,7 @@
                             <% if (tree[i].type == 'file') { %>
                             <li class="file-entry">
                                 <label>
-                                    <input type="checkbox" name="selfile" value="/<%= tree[i].url %>" />
+                                    <input type="checkbox" name="selfile" data-ext=<%= tree[i].ext %> value="/<%= tree[i].url %>" />
                                     <span class="icon-holder"></span>
                                 </label>
                                 <a href="/<%= tree[i].url %>" class="file" data-mime="<%= tree[i].mime %>" target="_blank">

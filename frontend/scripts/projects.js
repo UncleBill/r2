@@ -223,6 +223,7 @@ $("#operateClearHistory").click(function () {
 
 
 // read version
+// ============
 readVersion();
 function readVersion() {
     var url = '/f5api';
@@ -237,3 +238,18 @@ function readVersion() {
         $version.text('Version: ' + obj.version);
     })
 }
+
+// host location
+// =============
+$("#operateHostLocation").click(function () {
+    var url = '/f5api';
+    $.ajax({
+        'url': url,
+        'dataType': 'json',
+        'data': {
+            'action': 'getHostIP'
+        }
+    }).done(function (obj) {
+        location.hostname = obj.ip;
+    });
+})

@@ -5,9 +5,30 @@ var $projectList = $("#projectList");
 
 // load projects
 // =============
+var projvm = new Vue({
+    el: "#projectList",
+    data: {
+        list: []
+    },
+    computed: {
+        projects: {
+            get: function () {
+                return this.list;
+            },
+            set: function (list) {
+                var obj;
+                for (var i = 0, len = list.length; i < len; ++i) {
+                    obj = list[i];
+                    obj['link'] = linkpre + obj['port'];
+                    obj['name'] = obj['dir'].split(/(\\|\/)/).pop();
+                }
+                this.list = list;
+            }
+        }
+    }
+})
 function loadProjects() {
     var url = '/f5api';
-    var tpl = $("#projectTpl").html();
     $.ajax({
         'url': url,
         'dataType': 'json',
@@ -15,29 +36,13 @@ function loadProjects() {
             'action': 'getServers'
         }
     }).done(function (list) {
-        var htmlcode = [];
-        var proj, obj;
+        var obj;
         for (var i = 0, len = list.length; i < len; ++i) {
             obj = list[i];
-            proj = tpl.replace(/{{(.*?)}}/gm, function (_, m) {
-                if (m == 'projectLink') {
-                    return linkpre + obj['port'];
-                }
-                switch (m) {
-                    case 'projectPath':
-                        return obj['dir'];
-                    case 'projectPort':
-                        return obj['port'];
-                    case 'projectLink':
-                        return linkpre + obj['port'];
-                    case 'projectName':
-                        return obj['dir'].split(/(\\|\/)/).pop();
-                }
-                return obj[m];
-            });
-            htmlcode.push(proj);
+            obj['link'] = linkpre + obj['port'];
+            obj['name'] = obj['dir'].split(/(\\|\/)/).pop();
         }
-        $projectList.html( htmlcode.join('') );
+        projvm.projects = list;
     });
 
 }

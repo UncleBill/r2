@@ -2,39 +2,42 @@
 <html lang="zh-CN">
     <head>
         <title>F5R2</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">   
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
         <link rel="stylesheet" type="text/css" href="styles/common.css" />
         <link rel="stylesheet" type="text/css" href="styles/project.css" />
         <script src="/f5static/jquery.js" type="text/javascript" charset="utf-8"></script>
-        <script type="text/template" id="projectTpl">
-            <div class="project status-{{status}}" data-dir="{{projectPath}}" data-port="{{projectPort}}">
-                <div class="project-inner">
-                    <div class="project-info">
-                        <a class="project-name" href="{{projectLink}}" target="main">
-                            {{projectName}}
-                            <span class="project-port">{{projectPort}}</span>
-                        </a>
-                        <div class="project-path" title="{{projectPath}}">{{projectPath}}</div>
-                    </div>
-                    <a class="project-link" href="{{projectLink}}/" target="_blank">&#8599;</a>
-                </div>
-                <div class="project-operate">
-                    <table>
-                        <tr>
-                            <td><a class="operate-item operate-close"  href="javascript:void(0);">close</a></td>
-                            <td><a class="operate-item operate-delete" href="javascript:void(0);">delete</a></td>
-                            <td><a class="operate-item operate-restart" href="javascript:void(0);">restart</a></td>
-                            <td><a class="operate-item operate-view" href="{{projectLink}}" target="_blank">view</a></td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </script>
+        <script src="scripts/vue.min.js" type="text/javascript" charset="utf-8"></script>
     </head>
     <body class="focus-main">
         <div class="side">
             <div class="project-list">
-                <div class="list" id="projectList"></div>
+                <div class="list" id="projectList">
+                    <div class="project status-{{proj.status}}"
+                        v-for="proj in projects"
+                        data-dir="{{proj.dir}}"
+                        data-port="{{proj.port}}">
+                        <div class="project-inner">
+                            <div class="project-info">
+                                <a class="project-name" href="{{proj.link}}" target="main">
+                                    {{proj.name}}
+                                    <span class="project-port">{{proj.port}}</span>
+                                </a>
+                                <div class="project-path" title="{{proj.dir}}">{{proj.dir}}</div>
+                            </div>
+                            <a class="project-link" href="{{proj.link}}/" target="_blank">&#8599;</a>
+                        </div>
+                        <div class="project-operate">
+                            <table>
+                                <tr>
+                                    <td><a class="operate-item operate-close"  href="javascript:void(0);">close</a></td>
+                                    <td><a class="operate-item operate-delete" href="javascript:void(0);">delete</a></td>
+                                    <td><a class="operate-item operate-restart" href="javascript:void(0);">restart</a></td>
+                                    <td><a class="operate-item operate-view" href="{{proj.link}}" target="_blank">view</a></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
                 <div class="project project-new">
                     <div class="project-inner">
                         <input type="text" class="input-loca" name="loca" id="newpath" placeholder="directory ">

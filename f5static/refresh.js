@@ -97,3 +97,6 @@ socket.on('reload', function ($data) {
         }
     }
 });
+// socket.on('log', function (data) {
+//     console.log(data);
+// })

@@ -17,9 +17,9 @@
         </script>
         <% } %>
         <script type="text/javascript">
-            $(document).pjax(".pjax-item", '.wrapper');
-            $(document).on('pjax:start', function() { NProgress.start(); });
-            $(document).on('pjax:end',   function() { NProgress.done();  });
+            $(document).pjax(".pjax-item", '.wrapper')
+                    .on('pjax:start', function() { NProgress.start(); })
+                    .on('pjax:end',   function() { NProgress.done();  });
         </script>
     </head>
     <body>

@@ -61,13 +61,16 @@ function renderFiletype(files) {
 }
 
 $("#filetypes").on('click', 'input', function () {
+    var that = this;
     var $this = $(this);
     var type = $this.val();
-    if (this.checked) {
-        return;
-    } else {
-        
-    }
+    var $files = $("input[name=selfile]");
+    $files.each(function () {
+        var $this = $(this);
+        if ($this.attr('data-ext') == type) {
+            $this.prop('checked', that.checked);
+        }
+    })
 })
 
 

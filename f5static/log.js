@@ -21,6 +21,10 @@ var log = function () {
         $ele = null;
     })
 
+    socket.on('log:clear', function () {
+        console.clear && console.clear();
+    })
+
     log = function log() {
         var args = [].slice.call(arguments,0);
         args = args.map(function (a) {
@@ -59,8 +63,17 @@ var log = function () {
         socket.emit('log:html', html);
     }
 
+    log.clear = function () {
+        socket.emit('log:clear', null);
+    }
+
     var touchtimer;
+    var taptimestamp = new Date();
     document.addEventListener('touchstart', function (e) {
+        if ((new Date - taptimestamp) < 400) {
+            log.clear();
+        }
+        taptimestamp = new Date();
         clearTimeout(touchtimer);
         touchtimer = setTimeout(function() {
             log('emit html');

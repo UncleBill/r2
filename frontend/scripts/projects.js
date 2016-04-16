@@ -1,141 +1,91 @@
 var linkpre = location.protocol + '//' + location.hostname + ":";
-var $btnReload = $("#btnReload");
-var $btnCreate = $("#btnCreate");
 var $projectList = $("#projectList");
 
-// load projects
-// =============
-var projvm = new Vue({
+var $mainFrame = $("#mainFrame");
+
+// vms
+var projvm, newvm, r2vm;
+
+projvm = new Vue({
     el: "#projectList",
     data: {
-        list: []
+        projects: [],
+
+    },
+    ready: function () {
+        this.load();
     },
     computed: {
-        projects: {
+        list: {
             get: function () {
-                return this.list;
+                return this.porjects;
             },
             set: function (list) {
-                var obj;
+                var obj, name;
                 for (var i = 0, len = list.length; i < len; ++i) {
                     obj = list[i];
-                    obj['link'] = linkpre + obj['port'];
-                    obj['name'] = obj['dir'].split(/(\\|\/)/).pop();
+                    obj.link = linkpre + obj.port;
+                    name = obj.dir && obj.dir.split(/(\\|\/)/).pop() || "<NO NAME>";
+                    obj.name = name;
                 }
-                this.list = list;
+                projvm.projects = list;
             }
         }
-    }
-})
-function loadProjects() {
-    var url = '/f5api';
-    $.ajax({
-        'url': url,
-        'dataType': 'json',
-        'data': {
-            'action': 'getServers'
-        }
-    }).done(function (list) {
-        var obj;
-        for (var i = 0, len = list.length; i < len; ++i) {
-            obj = list[i];
-            obj['link'] = linkpre + obj['port'];
-            obj['name'] = obj['dir'].split(/(\\|\/)/).pop();
-        }
-        projvm.projects = list;
-    });
-
-}
-
-loadProjects();
+    },
+    methods: {
+        load: function () {
+            var url = '/f5api';
+            $.getJSON('/f5api', {
+                action: 'getServers'
+            }, function (list) {
+                projvm.list = list;
+            });
+        },
 
 
-// template render function
-// ========================
-function render(tpl, data, func) {
-    func = func || function (_, m) {
-        return data[m];
-    }
-    return tpl.replace(/{{(.*?)}}/gm, func);
-}
+        select: function (proj, eve) {
+            console.log('click', proj, eve);
+            // var $target = $(eve.target);
+            // var $proj = $target.hasClass("project") ? $target : $target.parents(".project");
+            // $proj.addClass('selected').siblings().removeClass('selected');
+            // TODO:
+            $.each(this.projects, function(_, p){
+                if(p!=proj){
+                    p.selected = false;
+                }
+            });
+            proj.selected = true;
+        },
+        restart: function (dir, port) {
+            this.createServer({
+                dir: dir,
+                prot: port
+            }, function (rsp) {
+                var obj = JSON.parse(rsp);
+                var url = location.protocol + "//" + location.hostname + ":" + port;
+                projvm.setMainFrame(url);
+            });
+        },
+        checkStatus: function (proj, eve) {
+            if (proj.status != 'running') {
+                eve.preventDefault();
+                eve.stopPropagation();
 
-// project list
-// ============
+                newvm.createServer({
+                    dir: proj.dir,
+                    port: proj.port
+                }, function (obj) {
+                    console.log('restart resp', obj);
+                    proj.port = obj.port;
+                    var url = location.protocol + "//" + location.hostname + ":" + proj.port;
+                    projvm.setMainFrame(url);
+                });
+            }
+        },
+        setMainFrame: function (url) {
+            $mainFrame.attr('src', url);
+        },
 
-// reload
-$btnReload.click(loadProjects);
-
-// create
-$btnCreate.click(function () {
-    var $newpath = $("#newpath");
-    var $newport = $("#newport");
-    var path = $newpath.val();
-    var port = $newport.val();
-    $newpath.attr('readOnly', true);
-    createServer({
-        dir: path,
-        port: port
-    }, function () {
-        $newpath.attr('readOnly', false);
-        $newpath.val('');
-    });
-});
-
-
-function createServer(config, callback) {
-    var apiurl = '/f5api?action=createServer';
-    $.post(apiurl, {
-        'dir': config.dir,
-        'port': config.port,
-        'action': 'createServer'
-    }, function (resp) {
-        // loadProjects();
-        callback && callback(resp);
-        var obj = JSON.parse(resp);
-        if (obj.success == 1) {
-            loadProjects();
-        }
-    })
-}
-
-// view
-$projectList.on('click', '.project', function () {
-    var $this = $(this);
-    $this.addClass('selected').siblings().removeClass('selected');
-})
-
-$projectList.on('click', '.operate-restart', function (eve) {
-    var $project = $(this).parents('.project');
-    var dir = $project.attr('data-dir');
-    var port = $project.attr('data-port');
-    createServer({
-        dir: dir,
-        port: port
-    }, function (resp) {
-        var obj = JSON.parse(resp);
-        var port = obj.port;
-        var url = location.protocol + "//" + location.hostname + ":" + port;
-        setMainFrame(url);
-    })
-})
-
-$projectList.on('click', '.project-name', function (eve) {
-    var $project = $(this).parents('.project');
-    var dir, port;
-    if (!$project.hasClass('status-running')) {
-        eve.preventDefault();
-        eve.stopPropagation();
-        dir = $project.attr('data-dir');
-        port = $project.attr('data-port');
-        createServer({
-            dir: dir,
-            port: port
-        }, function (resp) {
-            var obj = JSON.parse(resp);
-            var port = obj.port;
-            var url = location.protocol + "//" + location.hostname + ":" + port;
-            setMainFrame(url);
-        });
     }
 });
 
@@ -155,52 +105,109 @@ $projectList.on('click', '.operate-close', function (eve) {
             loadProjects();
         }
     });
-})
+});
 
+// new server creating vm
+newvm = new Vue({
+    el: "#newProject",
+    data: {
+        dirs: [],
+        newserver: {
+            dir: '',
+            port: undefined
+        },
+        creating: false
+    },
+    ready: function () {
+        var vm = this;
+        var $newpath = $("#newpath");
+        $newpath.on('input click', function (eve) {
+            eve.stopPropagation();
+            if (!vm.dirs.length) {
+                vm.load(vm.newserver.dir);
+            }
+        });
 
+        // blur then hide
+        $(document).click(function () {
+            newvm.dirs = [];
+        });
+    },
+    methods: {
+        load: function (dir) {
+            console.log('load', dir);
+            var vm = this;
+            dir = dir || vm.newserver.dir || "";
+            $.getJSON('/f5api', {
+                dir: dir,
+                action: 'getDirectories'
+            }, function (list) {
+                vm.dirs = list;
+            });
+        },
+        select: function (dir, eve) {
+            console.log('click select', dir);
+            var vm = this;
+            eve.stopPropagation();
+            dir = dir.path || dir;
 
+            vm.newserver.dir = dir;
+        },
+        createServer: function (config, callback) {
+            var vm = this;
+            var apiurl = '/f5api?action=createServer';
+            $.post(apiurl, {
+                dir: config.dir,
+                port: config.port,
+                action: 'createServer'
+            }, function (rsp) {
+                var obj = JSON.parse(rsp);
+                console.log('[ newvm ] create server of', config, ', and get respone ', obj);
+                // reload projects;
+                projvm.load();
+                if (callback) {
+                    callback(obj);
+                }
+            });
+        },
+        create: function () {
+            var vm = this;
+            var dir = vm.newserver.dir;
+            var port = vm.newserver.port;
+            if (!dir) {
+                // TODO: pop $directories
+                return;
+            }
 
-function setMainFrame(url) {
-    $("#mainFrame").attr('src', url);
-}
+            vm.creating = true;
+
+            vm.createServer({
+                dir: dir,
+                port: port
+            }, function () {
+                vm.creating = false;
+                vm.newserver = {
+                    dir: '',
+                    port: ''
+                };
+            });
+        },
+        reloadProj: function () {
+            projvm.load();
+        }
+    }
+});
+
+newvm.$watch('newserver.dir', function () {
+    var vm = this;
+    console.log('newserver change to', vm.newserver);
+    vm.load(vm.newserver.dir);
+});
 
 
 // input directory
 var $directories = $("#directories");
 var $newpath = $("#newpath");
-$newpath.on('keyup paste click', function (eve) {
-    eve.stopPropagation()
-    loadDirectories();
-});
-$directories.on('click', 'li', function (eve) {
-    eve.stopPropagation();
-    var dir = $(this).attr('data-path');
-    loadDirectories(dir);
-    $newpath.val(dir);
-    
-});
-$(document).click(function () {
-    $directories.addClass('hide');
-});
-function loadDirectories(dir) {
-    dir = dir || $newpath.val().trim();
-    $.ajax({
-        url: '/f5api',
-        dataType: 'json',
-        data: {
-            action: 'getDirectories',
-        dir: dir
-        }
-    }).done(function (list) {
-        var html = ['<ul>'];
-        html = html.concat( list.map(function (folder) {
-            var p = folder.path || folder;
-            return "<li data-path='" + p + "'>"  + p + "</li>";
-        }) )
-        html.push('</ul>');
-        $directories.html( html.join('\n') ).removeClass('hide');
-    })
-}
 
 
 function closeF5R2() {
@@ -223,26 +230,23 @@ $("#operateClearHistory").click(function () {
         if (obj.success) {
             loadProjects();
         }
-    })
+    });
 });
 
 
-// read version
-// ============
-readVersion();
-function readVersion() {
-    var url = '/f5api';
-    var $version = $(".version");
-    $.ajax({
-        'url': url,
-        'dataType': 'json',
-        'data': {
-            'action': 'getVersion'
-        }
-    }).done(function (obj) {
-        $version.text('Version: ' + obj.version);
-    })
-}
+// r2 vm
+r2vm = new Vue({
+    el: "#r2info",
+    data: {
+        version: '0.0.0'
+    },
+    ready: function () {
+        var vm = this;
+        $.getJSON('/f5api', { action: 'getVersion' }, function (info) {
+            vm.version = info.version;
+        });
+    }
+});
 
 // host location
 // =============
@@ -257,4 +261,4 @@ $("#operateHostLocation").click(function () {
     }).done(function (obj) {
         location.hostname = obj.ip;
     });
-})
+});

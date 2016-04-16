@@ -12,13 +12,15 @@
         <div class="side">
             <div class="project-list">
                 <div class="list" id="projectList">
+                    <template v-for="proj in projects">
                     <div class="project status-{{proj.status}}"
-                        v-for="proj in projects"
+                        v-bind:class="{ 'selected': proj.selected }"
+                        v-on:click="select(proj, $event)"
                         data-dir="{{proj.dir}}"
                         data-port="{{proj.port}}">
                         <div class="project-inner">
                             <div class="project-info">
-                                <a class="project-name" href="{{proj.link}}" target="main">
+                                <a class="project-name" v-on:click="checkStatus(proj, $event)" href="{{proj.link}}" target="main">
                                     {{proj.name}}
                                     <span class="project-port">{{proj.port}}</span>
                                 </a>
@@ -29,22 +31,43 @@
                         <div class="project-operate">
                             <table>
                                 <tr>
-                                    <td><a class="operate-item operate-close"  href="javascript:void(0);">close</a></td>
+                                    <td><a class="operate-item operate-close" v-on:click.stop.prevent="close" href="javascript:void(0);">close</a></td>
                                     <td><a class="operate-item operate-delete" href="javascript:void(0);">delete</a></td>
-                                    <td><a class="operate-item operate-restart" href="javascript:void(0);">restart</a></td>
+                                    <td><a class="operate-item operate-restart" v-on:click.stop.prevent="restart(proj.dir, proj.port)" href="javascript:void(0);">restart</a></td>
                                     <td><a class="operate-item operate-view" href="{{proj.link}}" target="_blank">view</a></td>
                                 </tr>
                             </table>
                         </div>
                     </div>
+                    </template>
                 </div>
-                <div class="project project-new">
+                <div class="project project-new" id="newProject">
                     <div class="project-inner">
-                        <input type="text" class="input-loca" name="loca" id="newpath" placeholder="directory ">
-                        <input type="text" class="input-port" name="port" id="newport" placeholder="port">
-                        <a class="btn-item btn-create" id="btnCreate" href="javascript:void(0);">+</a>
-                        <a class="btn-item btn-reload" id="btnReload" href="javascript:void(0);"></a>
-                        <div id="directories" class="directories hide"></div>
+                        <input type="text" 
+                            class="input-loca"
+                            name="loca"
+                            v-bind:readonly="creating"
+                            debounce='200'
+                            id="newpath"
+                            v-model="newserver.dir"
+                            placeholder="directory ">
+                        <input
+                            type="text"
+                            class="input-port"
+                            name="port"
+                            v-bind:readonly="creating"
+                            id="newport"
+                            v-model="newserver.port"
+                            placeholder="port">
+                        <a class="btn-item btn-create" v-on:click="create" href="javascript:void(0);">+</a>
+                        <a class="btn-item btn-reload" v-on:click="reloadProj" href="javascript:void(0);"></a>
+                        <div id="directories" class="directories" v-show="dirs.length">
+                            <ul>
+                                <template v-for="dir in dirs">
+                                <li data-path="{{dir.path || dir}}" v-on:click="select(dir, $event)">{{dir.path||dir}}</li>
+                                </template>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -69,8 +92,10 @@
                 </ul>
             </div>
             <div class="footer">
-                <div class="version">version: ...</div>
-                <div><a target="_blank" href="https://github.com/unclebill/r2">Fork me on github &#8599;</a></div>
+                <div class="r2info" id="r2info">
+                    <div class="version">version: {{version}}</div>
+                    <div><a target="_blank" href="https://github.com/unclebill/r2">Fork me on github &#8599;</a></div>
+                </div>
             </div>
         </div>
         <div class="main">

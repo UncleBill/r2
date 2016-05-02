@@ -1,66 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">   
-        <title><%= pwd %></title>
-        <link rel="stylesheet" href="/f5static/tree.css" type="text/css" charset="utf-8">
-        <link rel="stylesheet" href="/f5static/nprogress.css" type="text/css" charset="utf-8">
-        <script src="/f5static/jquery.js"></script>
-        <script src="/f5static/jquery.pjax.js"></script>
-        <script src="/f5static/nprogress.js" type="text/javascript" charset="utf-8"></script>
-        <% if(ismain) { %>
-        <script type="text/javascript">
-            if (location.pathname == "/" && location.search != '?debug') {
-                location.pathname = 'projects.html';
-            }
-        </script>
-        <% } %>
-        <script type="text/javascript">
-            $(document).pjax(".pjax-item", '.wrapper');
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title><%= pwd %></title>
+    <link rel="stylesheet" href="/f5static/tree.css" type="text/css" charset="utf-8">
+    <link rel="stylesheet" href="/f5static/nprogress.css" type="text/css" charset="utf-8">
+    <script src="/f5static/jquery.js"></script>
+    <script src="/f5static/vue.js"></script>
+    <script src="/f5static/jquery.pjax.js"></script>
+    <script src="/f5static/nprogress.js" type="text/javascript" charset="utf-8"></script>
+    <% if(ismain) { %>
+    <script type="text/javascript">
+      if (location.pathname == "/" && location.search != '?debug') {
+        location.pathname = 'projects.html';
+      }
+    </script>
+    <% } %>
+    <script type="text/javascript">
+      $(document).pjax(".pjax-item", '.wrapper');
             $(document).on('pjax:start', function() { NProgress.start(); });
             $(document).on('pjax:end',   function() { NProgress.done();  });
-        </script>
-    </head>
-    <body>
-        <div class="wrapper">
-            <div id="mainTree" class="main-tree tree-container">
-                <div class="tree-padding">
-                    <a href="http://<%= localip %>:<%= port %><%= url %>">&para;</a>
-                    <div id="pwd" 
-                        class="pwd" 
-                        data-localip="<%= localip %>"
-                        data-root="<%= rootpath %>" 
-                        data-mainport="<%= mainport %>"
-                        data-pwd="<%= pwd %>">
-                        <%= pwd %>
-                    </div>
-                    <div id="filetypes" class="filetypes"></div>
-                    <div id="fileTree" class="file-tree">
-                        <%- include('./dir.ejs', {tree: tree}) %>
-                    </div>
-                </div>
+
+            // data
+            var data = <%- data %>;
+    </script>
+    <style type="text/css" media="screen">
+      .subdir-transition {
+        transition: all .3s ease;
+      }
+      .subdir-enter,
+      .subdir-leave {
+        opacity: 0;
+        height: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="text/tempalte" id='item-template'>
+      <li class="file-entry" v-if="model.type=='file'">
+          <label>
+              <input type="checkbox"
+              name="selfile"
+              v-bind:data-ext="model.ext"
+              v-bind:value="'/'+model.url" />
+              <span class="icon-holder"></span>
+          </label>
+          <a v-bind:href="model.url" class="file" v-bind:data-mime="model.mime" target="_blank">
+          {{ model.name }}
+          </a>
+      </li>
+
+      <li class="subdir"  v-if="model.type=='directory'">
+          <label>
+              <input type="checkbox" name="selfolder" v-bind:value="model.url" />
+              <span class="icon-holder"></span>
+          </label>
+          <a v-bind:href="'#'+model.url" v-on:click="toggle" class="folder">
+              {{model.name}}
+          </a>
+          <a :href="model.url" class="pjax-item">&#8594;</a>
+          <ul transition="subdir" v-show='open'>
+            <item
+              v-for="submodel in model.children"
+              :model="submodel">
+            </item>
+          </ul>
+      </li>
+    </script>
+    <div class="wrapper">
+      <div id="tree">
+        <div id="mainTree" class="main-tree tree-container">
+          <div class="tree-padding">
+            <a href="http://<%=localip%>:<%=port%><%=url%>">&para;</a>
+            <div id="pwd"
+              class="pwd"
+              data-localip="<%=localip%>"
+              data-root="<%=rootpath%>"
+              data-mainport="<%=mainport%>"
+              data-pwd="<%=pwd%>">
+              <%=pwd%>
             </div>
-            <div id="pickTree" class="pick-tree tree-container">
-                <div class="tree-padding">
-                    <div>
-                        <button class="btn-item pick-btn" id="pickBtn">pack</button>
-                        <button class="btn-item clear-btn" id="clearBtn">clear</button>
-                    </div>
-                    <div id="pickFileTree" class="file-tree"></div>
-                    <div id="msg"></div>
-                </div>
-            </form>
-            <div class="clear" style="clear:both"></div>
+            <div id="filetypes" class="filetypes"></div>
+            <div id="fileTree" class="file-tree">
+              <ul>
+                <item
+                v-for="node in tree"
+                :model='node'></item>
+              </ul>
+            </div>
+          </div>
         </div>
-        <script src="/socket.io/socket.io.js"></script>
-        <script type="text/javascript">
-            var socket = io.connect(location.hostname);
+        <div id="pickTree" class="pick-tree tree-container">
+          <div class="tree-padding">
+            <div>
+              <button class="btn-item pick-btn" id="pickBtn">pack</button>
+              <button class="btn-item clear-btn" id="clearBtn">clear</button>
+            </div>
+            <div id="pickFileTree" class="file-tree"></div>
+            <div id="msg"></div>
+          </div>
+          <div class="clear" style="clear:both"></div>
+        </div>
+      </div>
+      <script src="/socket.io/socket.io.js"></script>
+      <script type="text/javascript">
+        var socket = io.connect(location.hostname);
             socket.on('reload', function (data) {
-                window.location.reload();
+              window.location.reload();
             });
-        </script>
-        <script src="/f5static/tree.js"></script>
-        <script src="/f5static/picker.js"></script>
+      </script>
+      <script src="/f5static/tree.js"></script>
+      <script src="/f5static/picker.js"></script>
     </body>
-</html>
+  </html>

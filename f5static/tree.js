@@ -106,3 +106,31 @@ function renderLinks() {
 }
 
 renderLinks();
+
+// item component
+Vue.component('item', {
+  template: '#item-template',
+  props: {
+    model: Object
+  },
+  data: function () {
+    return {
+      open: false
+    }
+  },
+  computed: {
+    isFolder: function (){
+      return this.model.children && this.model.children.length;
+    }
+  },
+  methods: {
+    toggle: function () {
+      this.open = !this.open;
+    }
+  }
+});
+
+var treevm = new Vue({
+  el: '#tree',
+  data: JSON.parse(data)
+});

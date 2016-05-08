@@ -15,42 +15,28 @@ projvm = new Vue({
   ready: function () {
     this.load();
   },
-  computed: {
-    list: {
-      get: function () {
-        return this.porjects;
-      },
-      set: function (list) {
-        var obj, name;
-        for (var i = 0, len = list.length; i < len; ++i) {
-          obj = list[i];
-          obj.link = linkpre + obj.port;
-          name = obj.dir && obj.dir.split(/(\\|\/)/).pop() || "<NO NAME>";
-          obj.name = name;
-        }
-        projvm.projects = list;
-      }
-    }
-  },
   methods: {
     load: function () {
       var url = '/f5api';
       $.getJSON('/f5api', {
         action: 'getServers'
       }, function (list) {
-        projvm.list = list;
+        list = list.map(function (proj) {
+          proj.link = linkpre + proj.port;
+          var name = proj.dir && proj.dir.split(/(\\|\/)/).pop() || "<No Name>";
+          proj.name = name;
+          proj.selected = false;
+          return proj;
+        });
+
+        projvm.projects = list;
       });
+
     },
 
-
     select: function (proj, eve) {
-      console.log('click', proj, eve);
-      // var $target = $(eve.target);
-      // var $proj = $target.hasClass("project") ? $target : $target.parents(".project");
-      // $proj.addClass('selected').siblings().removeClass('selected');
-      // TODO:
-      $.each(this.projects, function(_, p){
-        if(p!=proj){
+      this.projects.map(function (p) {
+        if (p != proj) {
           p.selected = false;
         }
       });

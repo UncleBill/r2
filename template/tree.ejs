@@ -46,7 +46,7 @@
               v-bind:value="'/'+model.url" />
               <span class="icon-holder"></span>
           </label>
-          <a v-bind:href="model.url" class="file" v-bind:data-mime="model.mime" target="_blank">
+          <a v-bind:href="'/'+model.url" class="file" v-bind:data-mime="model.mime" target="_blank">
           {{ model.name }}
           </a>
       </li>

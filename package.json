@@ -4,7 +4,7 @@
   "description": "F5 version 2, a front-end development tool.",
   "main": "index.js",
   "bin": {
-      "f5r2": "./bin/f5r2"
+    "f5r2": "./bin/f5r2"
   },
   "scripts": {
     "test": "node test.js",
@@ -16,9 +16,9 @@
     "auto refresh"
   ],
   "dependencies": {
-      "socket.io": "0.8",
-      "mime":"*",
-      "ejs": "*"
+    "ejs": "^2.5.5",
+    "mime": "^1.3.4",
+    "socket.io": "^1.7.2"
   },
   "author": "UncleBill",
   "license": "BSD"

@@ -16,7 +16,7 @@
     "auto refresh"
   ],
   "dependencies": {
-      "socket.io": "0.8",
+      "socket.io": "*",
       "mime":"*",
       "ejs": "*"
   },

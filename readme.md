@@ -1,5 +1,7 @@
 About
 =====
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/UncleBill/r2.svg)](https://greenkeeper.io/)
 F5 version 2. Easier to use.
 
 Install

@@ -2,9 +2,10 @@
   "name": "F5R2",
   "version": "0.1.2",
   "description": "F5 version 2, a front-end development tool.",
+  "homepage": "github.com/unclebill/r2",
   "main": "index.js",
   "bin": {
-      "f5r2": "./bin/f5r2"
+    "f5r2": "./bin/f5r2"
   },
   "scripts": {
     "test": "node test.js",
@@ -16,9 +17,10 @@
     "auto refresh"
   ],
   "dependencies": {
-      "socket.io": "*",
-      "mime":"*",
-      "ejs": "*"
+    "chokidar": "^2.0.3",
+    "express": "^4.16.3",
+    "get-port": "^3.2.0",
+    "serve-index": "^1.9.1"
   },
   "author": "UncleBill",
   "license": "BSD"

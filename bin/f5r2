@@ -1,42 +1,20 @@
 #!/usr/bin/env node
 
-var F5R2   = require("../lib/f5r2"),
-    fs   = require('fs'),
-    net  = require('net'),
-    http = require('http'),
-    qstr = require('querystring'),
-    path = require('path'),
-    port = 3000;
+var http = require('http')
+var getPort = require('get-port')
+var f5r2 = require('../lib/f5r2')
+var homepage = require('../package.json').homepage
 
-var f5 = new F5R2();
-var argvs = process.argv;
-port = parseInt(argvs[argvs.length - 1]) || port;
-var count = 0;
-var hasserver = false;
-
-var tryport = function(p) {
-    count ++;
-    if (count > 50) {
-        return;
+getPort({port: 3000}).then(port => {
+  var server = http.Server(f5r2)
+  server.listen(port, err => {
+    if (err) {
+      console.log('> Server error', err);
+    } else {
+      console.log('> F5R2 is listening at', `http://localhost:${port}`);
+      console.log(`> Report issues at ${homepage}`);
     }
-    if (p >= 0xffff) {
-        return;
-    }
-    var tester = net.createServer().once('error', function(err){
-            console.warn('port', p, 'is in use');
-            port = p + 50;
-            hasserver = true;
-            tryport(port);
-        }).once('listening', function () {
-            console.log('Listening on', p);
-            tester.once('close', function () {
-                f5.start(port);
-                console.log('start main server at', f5.config.port);
-            }).close();
-        })
-        .listen(p);
-};
-
-
-tryport(port);
-
+  })
+}).catch(err => {
+  console.log(err);
+})

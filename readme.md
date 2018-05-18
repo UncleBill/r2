@@ -6,7 +6,7 @@ Install
 =======
     # r2 hasn't been published to npm yet,
     # but you can install from github
-    $ npm Install unclebill/r2 -g
+    $ npm install unclebill/r2 -g
 
 How to use
 ==========
